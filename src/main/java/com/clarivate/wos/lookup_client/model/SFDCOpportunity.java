@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * SFDCOpportunity
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-12T17:30:38.696406200+01:00[Europe/Paris]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-13T01:26:33.372+01:00[Europe/Paris]")
 public class SFDCOpportunity {
   public static final String SERIALIZED_NAME_OPPORTUNITY_I_D_NUMBER = "opportunityIDNumber";
   @SerializedName(SERIALIZED_NAME_OPPORTUNITY_I_D_NUMBER)
@@ -371,7 +371,7 @@ public class SFDCOpportunity {
 
   public SFDCOpportunity addProductsItem(OpportunityAPIItem productsItem) {
     if (this.products == null) {
-      this.products = new ArrayList<>();
+      this.products = new ArrayList<OpportunityAPIItem>();
     }
     this.products.add(productsItem);
     return this;

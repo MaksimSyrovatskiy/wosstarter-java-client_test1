@@ -492,7 +492,7 @@ components:
           example: /SFDCOpportunities/OPP-00000000
           type: string
         type:
-          description: "Type of opportunity, New, Renewal, Amendment, etc."
+          description: Type of opportunity, New, Renewal, Amendment, etc.
           type: string
         contractExpireDate:
           type: string
@@ -748,7 +748,7 @@ components:
         opportunityID:
           type: string
         type:
-          description: "Type of opportunity, New, Renewal, Amendment, etc."
+          description: Type of opportunity, New, Renewal, Amendment, etc.
           type: string
         contractExpireDate:
           type: string
@@ -991,8 +991,8 @@ components:
           type: string
       type: object
     Metadata:
-      description: "Information about total number of items in the retrieve, number\
-        \ of recodrs on the page, and the page number."
+      description: Information about total number of items in the retrieve, number
+        of recodrs on the page, and the page number.
       example:
         total: 0
         limit: 1

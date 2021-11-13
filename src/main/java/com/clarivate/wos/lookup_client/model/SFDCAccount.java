@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * SFDCAccount
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-12T17:30:38.696406200+01:00[Europe/Paris]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-13T01:26:33.372+01:00[Europe/Paris]")
 public class SFDCAccount {
   public static final String SERIALIZED_NAME_NAME = "name";
   @SerializedName(SERIALIZED_NAME_NAME)
@@ -164,7 +164,7 @@ public class SFDCAccount {
 
   public SFDCAccount addSfdcOpportunitiesItem(SFDCOpportunityReference sfdcOpportunitiesItem) {
     if (this.sfdcOpportunities == null) {
-      this.sfdcOpportunities = new ArrayList<>();
+      this.sfdcOpportunities = new ArrayList<SFDCOpportunityReference>();
     }
     this.sfdcOpportunities.add(sfdcOpportunitiesItem);
     return this;
@@ -218,7 +218,7 @@ public class SFDCAccount {
 
   public SFDCAccount addPortalInfoItem(Subscription portalInfoItem) {
     if (this.portalInfo == null) {
-      this.portalInfo = new ArrayList<>();
+      this.portalInfo = new ArrayList<Subscription>();
     }
     this.portalInfo.add(portalInfoItem);
     return this;

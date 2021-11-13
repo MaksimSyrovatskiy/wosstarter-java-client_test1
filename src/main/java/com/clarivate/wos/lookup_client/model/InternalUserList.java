@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * InternalUserList
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-12T17:30:38.696406200+01:00[Europe/Paris]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-13T01:26:33.372+01:00[Europe/Paris]")
 public class InternalUserList {
   public static final String SERIALIZED_NAME_METADATA = "metadata";
   @SerializedName(SERIALIZED_NAME_METADATA)
@@ -73,7 +73,7 @@ public class InternalUserList {
 
   public InternalUserList addHitsItem(InternalUserListRecord hitsItem) {
     if (this.hits == null) {
-      this.hits = new ArrayList<>();
+      this.hits = new ArrayList<InternalUserListRecord>();
     }
     this.hits.add(hitsItem);
     return this;

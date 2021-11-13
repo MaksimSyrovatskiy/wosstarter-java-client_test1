@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * CaesarIdSetReferenceIdentifierSet
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-12T17:30:38.696406200+01:00[Europe/Paris]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-13T01:26:33.372+01:00[Europe/Paris]")
 public class CaesarIdSetReferenceIdentifierSet {
   public static final String SERIALIZED_NAME_ID = "id";
   @SerializedName(SERIALIZED_NAME_ID)
@@ -50,7 +50,7 @@ public class CaesarIdSetReferenceIdentifierSet {
 
   public static final String SERIALIZED_NAME_IDENTIFIER_LIST = "identifierList";
   @SerializedName(SERIALIZED_NAME_IDENTIFIER_LIST)
-  private List<CaesarIdSetReferenceIdentifierList> identifierList = new ArrayList<>();
+  private List<CaesarIdSetReferenceIdentifierList> identifierList = new ArrayList<CaesarIdSetReferenceIdentifierList>();
 
   public static final String SERIALIZED_NAME_CUSTOM_APPS = "customApps";
   @SerializedName(SERIALIZED_NAME_CUSTOM_APPS)
@@ -58,7 +58,7 @@ public class CaesarIdSetReferenceIdentifierSet {
 
   public static final String SERIALIZED_NAME_ENTITLEMENT_SET = "entitlementSet";
   @SerializedName(SERIALIZED_NAME_ENTITLEMENT_SET)
-  private List<String> entitlementSet = new ArrayList<>();
+  private List<String> entitlementSet = new ArrayList<String>();
 
 
   public CaesarIdSetReferenceIdentifierSet id(String id) {
@@ -189,7 +189,7 @@ public class CaesarIdSetReferenceIdentifierSet {
 
   public CaesarIdSetReferenceIdentifierSet addCustomAppsItem(String customAppsItem) {
     if (this.customApps == null) {
-      this.customApps = new ArrayList<>();
+      this.customApps = new ArrayList<String>();
     }
     this.customApps.add(customAppsItem);
     return this;

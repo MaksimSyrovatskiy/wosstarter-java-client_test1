@@ -31,7 +31,7 @@ import java.util.List;
  * Caesar reference that is used when searching other entitites
  */
 @ApiModel(description = "Caesar reference that is used when searching other entitites")
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-12T17:30:38.696406200+01:00[Europe/Paris]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-13T01:26:33.372+01:00[Europe/Paris]")
 public class CaesarIdSetReference {
   public static final String SERIALIZED_NAME_ACCOUNT_NAME = "accountName";
   @SerializedName(SERIALIZED_NAME_ACCOUNT_NAME)
@@ -208,7 +208,7 @@ public class CaesarIdSetReference {
 
   public CaesarIdSetReference addIdentifierSetItem(CaesarIdSetReferenceIdentifierSet identifierSetItem) {
     if (this.identifierSet == null) {
-      this.identifierSet = new ArrayList<>();
+      this.identifierSet = new ArrayList<CaesarIdSetReferenceIdentifierSet>();
     }
     this.identifierSet.add(identifierSetItem);
     return this;
