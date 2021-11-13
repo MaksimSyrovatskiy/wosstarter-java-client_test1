@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * OpportunityAPIItem
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-12T17:30:38.696406200+01:00[Europe/Paris]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-13T01:26:33.372+01:00[Europe/Paris]")
 public class OpportunityAPIItem {
   public static final String SERIALIZED_NAME_SFDC_PRODUCT_CODE = "sfdcProductCode";
   @SerializedName(SERIALIZED_NAME_SFDC_PRODUCT_CODE)
@@ -130,7 +130,7 @@ public class OpportunityAPIItem {
 
   public OpportunityAPIItem addQuoteLinesItem(String quoteLinesItem) {
     if (this.quoteLines == null) {
-      this.quoteLines = new ArrayList<>();
+      this.quoteLines = new ArrayList<String>();
     }
     this.quoteLines.add(quoteLinesItem);
     return this;
@@ -161,7 +161,7 @@ public class OpportunityAPIItem {
 
   public OpportunityAPIItem addDevPortalSubscriptionItemItem(Subscription devPortalSubscriptionItemItem) {
     if (this.devPortalSubscriptionItem == null) {
-      this.devPortalSubscriptionItem = new ArrayList<>();
+      this.devPortalSubscriptionItem = new ArrayList<Subscription>();
     }
     this.devPortalSubscriptionItem.add(devPortalSubscriptionItemItem);
     return this;

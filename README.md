@@ -2,7 +2,7 @@
 
 Web of Science Lookup API
 - API version: 0.1.9
-  - Build date: 2021-11-12T17:30:38.696406200+01:00[Europe/Paris]
+  - Build date: 2021-11-13T01:26:33.372+01:00[Europe/Paris]
 
 Web of Science Lookup is a backend API that maps Web of Science API Subscription (Developer Portal), Clarivate SFDC data, and Caesar Data. The API is used to synchronize data and retrieve customer subscriptions.
 
@@ -14,7 +14,7 @@ Web of Science Lookup is a backend API that maps Web of Science API Subscription
 ## Requirements
 
 Building the API client library requires:
-1. Java 1.8+
+1. Java 1.7+
 2. Maven/Gradle
 
 ## Installation
@@ -41,7 +41,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>com.clarivate.wos</groupId>
   <artifactId>com.clarivate.wos.lookup-client</artifactId>
-  <version>1.0.0</version>
+  <version>123</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -51,7 +51,7 @@ Add this dependency to your project's POM:
 Add this dependency to your project's build file:
 
 ```groovy
-compile "com.clarivate.wos:com.clarivate.wos.lookup-client:1.0.0"
+compile "com.clarivate.wos:com.clarivate.wos.lookup-client:123"
 ```
 
 ### Others
@@ -64,7 +64,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/com.clarivate.wos.lookup-client-1.0.0.jar`
+* `target/com.clarivate.wos.lookup-client-123.jar`
 * `target/lib/*.jar`
 
 ## Getting Started

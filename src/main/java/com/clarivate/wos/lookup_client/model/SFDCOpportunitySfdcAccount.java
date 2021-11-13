@@ -27,7 +27,7 @@ import java.io.IOException;
 /**
  * SFDCOpportunitySfdcAccount
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-12T17:30:38.696406200+01:00[Europe/Paris]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-13T01:26:33.372+01:00[Europe/Paris]")
 public class SFDCOpportunitySfdcAccount {
   public static final String SERIALIZED_NAME_ENTERPRISE_I_D = "enterpriseID";
   @SerializedName(SERIALIZED_NAME_ENTERPRISE_I_D)

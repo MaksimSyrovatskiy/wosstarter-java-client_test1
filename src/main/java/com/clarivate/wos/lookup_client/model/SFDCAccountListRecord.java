@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * SFDCAccountListRecord
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-12T17:30:38.696406200+01:00[Europe/Paris]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-13T01:26:33.372+01:00[Europe/Paris]")
 public class SFDCAccountListRecord {
   public static final String SERIALIZED_NAME_ACCOUNT_REF = "accountRef";
   @SerializedName(SERIALIZED_NAME_ACCOUNT_REF)
@@ -73,7 +73,7 @@ public class SFDCAccountListRecord {
 
   public SFDCAccountListRecord addMatchesItem(SearchMatch matchesItem) {
     if (this.matches == null) {
-      this.matches = new ArrayList<>();
+      this.matches = new ArrayList<SearchMatch>();
     }
     this.matches.add(matchesItem);
     return this;

@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * InternalUser
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-12T17:30:38.696406200+01:00[Europe/Paris]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-13T01:26:33.372+01:00[Europe/Paris]")
 public class InternalUser {
   public static final String SERIALIZED_NAME_EMAIL = "email";
   @SerializedName(SERIALIZED_NAME_EMAIL)
@@ -99,7 +99,7 @@ public class InternalUser {
 
   public InternalUser addSfdcAccountsItem(SFDCAccountReference sfdcAccountsItem) {
     if (this.sfdcAccounts == null) {
-      this.sfdcAccounts = new ArrayList<>();
+      this.sfdcAccounts = new ArrayList<SFDCAccountReference>();
     }
     this.sfdcAccounts.add(sfdcAccountsItem);
     return this;
