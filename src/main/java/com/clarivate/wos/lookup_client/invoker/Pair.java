@@ -13,7 +13,7 @@
 
 package com.clarivate.wos.lookup_client.invoker;
 
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-14T23:01:17.502+01:00[Europe/Paris]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-14T23:36:46.353+01:00[Europe/Paris]")
 public class Pair {
     private String name = "";
     private String value = "";

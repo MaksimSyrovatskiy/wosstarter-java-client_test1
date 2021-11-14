@@ -18,7 +18,7 @@ import com.clarivate.wos.lookup_client.invoker.Pair;
 import java.util.Map;
 import java.util.List;
 
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-14T23:01:17.502+01:00[Europe/Paris]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-14T23:36:46.353+01:00[Europe/Paris]")
 public class HttpBearerAuth implements Authentication {
   private final String scheme;
   private String bearerToken;
