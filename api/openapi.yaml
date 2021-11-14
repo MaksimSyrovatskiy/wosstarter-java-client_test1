@@ -1,1213 +1,976 @@
 openapi: 3.0.0
 info:
   description: |
-    Web of Science Lookup is a backend API that maps Web of Science API Subscription (Developer Portal), Clarivate SFDC data, and Caesar Data. The API is used to synchronize data and retrieve customer subscriptions.
-  title: Web of Science Lookup API
-  version: 0.1.9
+    The Web of Science™ Starter API provides basic metadata and search functionality for Web of Science™ Documents and Journals. Based on your subscription, this API can return times cited of documents.
+
+    ## Resouces
+    This API follows the REST approach to disclose resources in URL format. Only the GET method is currently available to perform requests over HTTP.
+
+    The API is available on the [Clarivate Developer Portal](https://developer.clarivate.com/apis/wos-starter). You can find more details about the subscription and the Plans.
+
+    ## Content
+
+    You can learn more about content at [Web of Science™ Product Page](https://clarivate.com/webofsciencegroup/solutions/web-of-science/) or in the [Web of Science™ Help](https://webofscience.help.clarivate.com/en-us/Content/home.htm).
+
+    (TODO: Add list of fields that are returned from this API.)
+
+    ## Credentials
+
+    All requests require authentication with an API Key authentication flow. For more details, check the [Guide][https://developer.clarivate.com/help/api-access#key_access].
+
+
+    ## API Client Libraries
+    TBD
+
+    ## Search and field tags for Web of Science documents
+    Web of Science™ offers [advanced search query builder](https://webofscience.help.clarivate.com/en-us/Content/advanced-search.html). This API does not support all field tags for documents. [Web of Science API Expanded](https://developer.clarivate.com/apis/wos) offers all available field tags. The following table lists the field tags that are supported by this API.
+    | Field Tag | Description                                                                                                                                                 |
+    |-----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | TI        | Title of document                                                                                                                                           |
+    | IS        | ISSN or ISBN                                                                                                                                                |
+    | SO        | Source title - The result contains all source titles within product database (for example, journal titles and/or book titles if the product includes books) |
+    | VL        | Volume                                                                                                                                                      |
+    | PG        | Page                                                                                                                                                        |
+    | CS        | Issue                                                                                                                                                       |
+    | PY        | Year Published                                                                                                                                              |
+    | AU        | Author                                                                                                                                                      |
+    | UT        | Accession Number                                                                                                                                            |
+    | DO        | DOI                                                                                                                                                         |
+    | PMID      | PubMed ID                                                                                                                                                   |
+    | OG        | Search for preferred organization names and/or their name variants from the Preferred Organization Index. <p> A search on a preferred organization name returns all records that contain the preferred name and all records that contain its name variants. A search on a name variant returns all records that contain the variant. For example, Cornell Law Sch returns all records that contain Cornell Law Sch in the Addresses field. <p> When searching for organization names that contain a Boolean (AND, NOT, NEAR, and SAME), always enclose the word in quotation marks ( " " ). For example: <p>   - OG=(Japan Science "and" Technology Agency (JST))      <br>   - OG=("Near" East Univ)         <br> - OG=("OR" Hlth Sci Univ)                           |
+    | TS        | Searches for topic terms in the following fields within a document: <p> - Title <br> - Abstract <br> - Author keywords <br> - Keywords Plus
+
+    ## Pagination
+    To ensure fast response time, each search or multiple entity calls (such as `/documents`) retrieve only a certain number of hits/records.
+
+    There are two optional request parameters to browse along with the result&#58; _limit_ and _page_.
+
+    - limit&#58; Number of returned results, ranging from 0 to 50 (default **10**)
+    - page&#58; Specifying a page to retrieve (default **1**)
+
+    Moreover, this information is shown in the response body, in the tag **metadata**&#58;
+
+    ```json
+    "metadata": {
+      "total": 91,
+      "page": 1,
+      "limit": 10
+    }
+    ```
+
+    ## Errors
+    The WoS Journals API uses conventional HTTP success or failure status codes. For errors, some extra information is included to indicate what went wrong in the JSON response. The list of HTTP codes is listed below.
+
+    | Code  | Title  | Description |
+    |---|---|---|
+    | 400  | Bad request  | Request syntax error |
+    | 401  | Unauthorized  | The API key is invalid or missed |
+    | 404  | Not found  | The resource is not found |
+    | 405 | Method not allowed | Method other than GET is not allowed |
+    | 50X  | Server errors  | Technical error with servers|
+    Each error response (except `401 Unauthorized` error) contains the code of the error, the title of the error and detailed description of the error: a misprint in an endpoint, wrong URL parameter, etc. The example of the error message is shown below:
+
+    ```json
+      "error": {
+        "status": 404,
+        "title": "Resource couldn't be found",
+        "details": "There is no record found in the Web of Science database. Please check your query."
+      }
+    ```
+    For the `401 Unauthorized` error the response body is a little bit different:
+    ```json
+    {
+      "error_description": "The access token is missing",
+      "error": "invalid_request"
+    }
+  license:
+    name: Clarivate Content as a Service Licence
+    url: https://clarivate.com/wp-content/uploads/dlm_uploads/2019/08/Product-Service-Terms.pdf
+  title: Web of Science™ Starter API
+  version: 1.0.0
 servers:
-- description: Not the final URL - TBD
-  url: http://api.clarivate.com/woslookup/v1
+- url: http://example.com
+tags:
+- description: Web of Science Documents
+  name: Documents
+- description: Web of Science Journals
+  name: Journals
 paths:
-  /subscriptions:
+  /journals:
     get:
-      description: TBD
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Subscriptions'
-          description: Subscription List
-      summary: returns application and subscription info for those apps not older
-        than 90 days that have not been approved
-      x-accepts: application/json
-  /SFDCOpportunities:
-    get:
-      description: TBD
       parameters:
-      - description: Filter by SFDC account name or enterprise id
-        examples:
-          enterpriseId:
-            value: ACT-00000000
-          accountName:
-            value: Harvard University
-        explode: true
+      - explode: true
         in: query
-        name: sfdcAccount
+        name: issn
         required: false
         schema:
           type: string
-        style: form
-      - description: Filter by SFDC API Product Code or Name
-        examples:
-          productCode:
-            value: "45021425"
-          product:
-            value: Journals API - Data Integration
-        explode: true
-        in: query
-        name: sfdcApiProduct
-        required: false
-        schema:
-          type: string
-        style: form
-      - description: Filter by SFDC Account domain(s)
-        explode: true
-        in: query
-        name: sfdcAccountDomain
-        required: false
-        schema:
-          example: kit.edu
-          type: string
-        style: form
-      - description: Filter by name or email address of internal Clarivate account
-        explode: true
-        in: query
-        name: internalUser
-        required: false
-        schema:
-          type: string
-        style: form
-      - description: "null"
-        explode: true
-        in: query
-        name: limit
-        required: false
-        schema:
-          default: 10
-          format: int32
-          type: integer
-        style: form
-      - description: "null"
-        explode: true
-        in: query
-        name: page
-        required: false
-        schema:
-          default: 1
-          format: int32
-          type: integer
         style: form
       responses:
         "200":
           content:
             application/json:
+              example:
+                metadata:
+                  total: 1
+                  page: 1
+                  limit: 10
+                hits:
+                - id: ANAT_REC_PART_A
+                  name: ANATOMICAL RECORD PART A-DISCOVERIES IN MOLECULAR CELLULAR
+                    AND EVOLUTIONARY BIOLOGY
+                  jcrTitle: ANAT REC PART A
+                  isoTitle: Anat. Rec. Part A
+                  issn: 1552-4884
+                  previousIssn:
+                  - 0003-276X
+                  links:
+                  - type: Journal Citation Report record
+                    url: http://gateway.webofknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcApp=&SrcAuth=WoSMatcher&KeyISSN=1552-4884&DestApp=JCR
               schema:
-                $ref: '#/components/schemas/SFDCOpportunityList'
-          description: Opportunity list
-      summary: Returns the list of opportunities
-      x-accepts: application/json
-    post:
-      description: TBD
-      requestBody:
-        $ref: '#/components/requestBodies/inline_object'
-        content:
-          multipart/form-data:
-            schema:
-              properties:
-                file:
-                  format: binary
-                  type: string
-              type: object
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                format: int32
-                type: integer
+                $ref: '#/components/schemas/JournalsList'
           description: OK
-      summary: Update the OPP data by providing an excel file
-      x-contentType: multipart/form-data
+      tags:
+      - Journals
       x-accepts: application/json
-  /SFDCOpportunities/{opportunityID}:
+  /journals/{uid}:
     get:
-      description: TBD
       parameters:
       - explode: false
         in: path
-        name: opportunityID
+        name: uid
         required: true
         schema:
-          example: OPP-00000000
           type: string
         style: simple
       responses:
         "200":
           content:
             application/json:
+              example:
+                id: ENDOCRINE
+                name: ENDOCRINE
+                jcrTitle: ENDOCRINE
+                isoTitle: Endocrine
+                issn: 1355-008X
+                previousIssn:
+                - 0969-711X
+                eIssn: 1559-0100
+                links:
+                - type: Journal Citation Report record
+                  url: http://gateway.webofknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcApp=&SrcAuth=WoSMatcher&KeyISSN=1355-008X&DestApp=JCR
               schema:
-                $ref: '#/components/schemas/SFDCOpportunity'
-          description: Opportunity
-      summary: Returns an opportunity by ID
+                $ref: '#/components/schemas/Journal'
+          description: OK
+      tags:
+      - Journals
       x-accepts: application/json
-  /SFDCAccounts:
+  /documents:
     get:
-      description: TBD
+      description: |
+        TODO
       parameters:
-      - description: Filter by SFDC API Product Code or Name
-        explode: true
+      - explode: true
         in: query
-        name: sfdcApiProduct
+        name: db
         required: false
         schema:
           type: string
         style: form
-      - description: Filter by SFDC Account Name
-        explode: true
+      - explode: true
         in: query
-        name: sfdcAccountName
-        required: false
+        name: q
+        required: true
         schema:
           type: string
         style: form
-      - description: Filter by SFDC Account domain(s)
-        explode: true
-        in: query
-        name: sfdcAccountDomain
-        required: false
-        schema:
-          example: kit.edu
-          type: string
-        style: form
-      - description: Filter by name or email address of internal Clarivate account
-        explode: true
-        in: query
-        name: internalUser
-        required: false
-        schema:
-          type: string
-        style: form
-      - description: "null"
-        explode: true
-        in: query
-        name: limit
-        required: false
-        schema:
-          default: 10
-          format: int32
-          type: integer
-        style: form
-      - description: "null"
-        explode: true
+      - explode: true
         in: query
         name: page
         required: false
         schema:
-          default: 1
           format: int32
           type: integer
+        style: form
+      - explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          format: int32
+          type: integer
+        style: form
+      - description: |
+          Order by field(s). Field name and order by clause separated by '+', use A for ASC and D for DESC, ex: PY+D. Multiple values are separated by comma. Supported fields:
+
+          * **LD** - Load Date
+          * **PY** - Publication Year
+          * **RS** - Relevance
+          * **TS** - Times Cited
+        explode: true
+        in: query
+        name: sortField
+        required: false
+        schema:
+          type: string
         style: form
       responses:
         "200":
           content:
             application/json:
+              example:
+                metadata:
+                  total: 2
+                  page: 1
+                  limit: 10
+                hits:
+                - uid: WOS:A1993MM96800012
+                  title: '''EPITAFIO'''
+                  types:
+                  - Poetry
+                  source:
+                    sourceTitle: CUADERNOS HISPANOAMERICANOS
+                    publishYear: 1993
+                    publishMonth: NOV
+                    issue: "521"
+                    pages:
+                      range: 125-125
+                      begin: "125"
+                      end: "125"
+                      count: 1
+                  names:
+                    authors:
+                    - displayName: TOMLINSON, C
+                  identifiers:
+                    issn: 1131-6438
+                  keywords:
+                    authorKeywords: null
+                - uid: WOS:000222526200005
+                  title: 'Mapping the land of ''I-don''t remember'': For a re-evaluation
+                    of La ''Historia oficial'''
+                  types:
+                  - Article
+                  source:
+                    sourceTitle: BULLETIN OF HISPANIC STUDIES
+                    publishYear: 2004
+                    publishMonth: APR
+                    volume: "81"
+                    issue: "2"
+                    pages:
+                      range: 215-228
+                      begin: "215"
+                      end: "228"
+                      count: 14
+                  names:
+                    authors:
+                    - wosStandard: Tomlinson, E
+                      researcherId: AAG-1344-2019
+                    bookEditors:
+                    - displayName: Walker, J. M.
+                  identifiers:
+                    doi: 10.3828/bhs.81.2.5
+                    issn: 1475-3839
+                  keywords:
+                    authorKeywords: []
               schema:
-                $ref: '#/components/schemas/SFDCAccountList'
-          description: Accounts list
-      summary: Returns the list of SFDC accounts
-      x-accepts: application/json
-    post:
-      description: TBD
-      requestBody:
-        $ref: '#/components/requestBodies/inline_object_1'
-        content:
-          multipart/form-data:
-            schema:
-              properties:
-                file:
-                  format: binary
-                  type: string
-              type: object
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                format: int32
-                type: integer
+                $ref: '#/components/schemas/DocumentsList'
           description: OK
-      summary: Update the Account data by providing an excel file
-      x-contentType: multipart/form-data
+      summary: |
+        Query Web of Science documents
+      tags:
+      - Documents
       x-accepts: application/json
-  /SFDCAccounts/{enterpriseID}:
+  /documents/{uid}:
     get:
-      description: TBD
       parameters:
       - explode: false
         in: path
-        name: enterpriseID
+        name: uid
         required: true
         schema:
-          example: ACT-00000000
           type: string
         style: simple
       responses:
         "200":
           content:
             application/json:
+              example:
+                uid: WOS:000282418500002
+                title: 'Wild bird indicators: using composite population trends of
+                  birds as measures of environmental health'
+                types:
+                - Article
+                source:
+                  sourceTitle: ORNITHOLOGICAL SCIENCE
+                  publishYear: 2010
+                  publishMonth: JUN
+                  volume: "9"
+                  issue: "1"
+                  pages:
+                    range: 3-22
+                    begin: "3"
+                    end: "22"
+                    count: 20
+                names:
+                  authors:
+                  - displayName: Gregory, RD
+                    researcherId: AAG-1843-2020
+                links:
+                  record: http://gateway.webofknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcApp=&SrcAuth=WosAPI&KeyUT=WOS:000282418500002&DestLinkType=FullRecord&DestApp=WOS
+                  citingArticles: http://gateway.webofknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcApp=&SrcAuth=WosAPI&KeyUT=WOS:000282418500002&DestLinkType=CitingArticles&DestApp=WOS
+                  references: http://gateway.webofknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcApp=&SrcAuth=WosAPI&KeyUT=WOS:000282418500002&DestLinkType=CitedReferences&DestApp=WOS
+                  related: http://gateway.webofknowledge.com/gateway/Gateway.cgi?GWVersion=2&SrcApp=&SrcAuth=WosAPI&KeyUT=WOS:000282418500002&DestLinkType=RelatedRecords&DestApp=WOS
+                citations:
+                - db: WOS
+                  count: 145
+                identifiers:
+                  doi: 10.2326/osj.9.3
+                  issn: 1347-0558
+                keywords:
+                  authorKeywords:
+                  - Biodiversity targets
+                  - Birds
+                  - Environmental health
+                  - Population trends
+                  - Wild bird indicators
               schema:
-                $ref: '#/components/schemas/SFDCAccount'
-          description: Account
-      summary: Returns an opportunity by ID
-      x-accepts: application/json
-  /SFDCInternalUsers:
-    get:
-      description: TBD
-      parameters:
-      - description: Filter by name or email address of internal Clarivate account
-        explode: true
-        in: query
-        name: internalUser
-        required: false
-        schema:
-          type: string
-        style: form
-      - description: "null"
-        explode: true
-        in: query
-        name: limit
-        required: false
-        schema:
-          default: 10
-          format: int32
-          type: integer
-        style: form
-      - description: "null"
-        explode: true
-        in: query
-        name: page
-        required: false
-        schema:
-          default: 1
-          format: int32
-          type: integer
-        style: form
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InternalUserList'
-          description: Accounts list
-      summary: Returns the list of SFDC users
-      x-accepts: application/json
-    post:
-      description: TBD
-      requestBody:
-        $ref: '#/components/requestBodies/inline_object_2'
-        content:
-          multipart/form-data:
-            schema:
-              properties:
-                file:
-                  format: binary
-                  type: string
-              type: object
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                format: int32
-                type: integer
+                $ref: '#/components/schemas/Document'
           description: OK
-      summary: Update the Internal users data by providing an excel file
-      x-contentType: multipart/form-data
-      x-accepts: application/json
-  /tasks/{id}:
-    get:
-      description: TBD
-      parameters:
-      - description: Task id
-        explode: false
-        in: path
-        name: id
-        required: true
-        schema:
-          format: int32
-          type: integer
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              examples:
-                Done:
-                  value:
-                    id: 54
-                    state: DONE
-                    startDt: 2021-10-05T00:58:28.516
-                    endDt: 2021-10-05T02:59:50.708
-                New:
-                  value:
-                    id: 54
-                    state: NEW
-                    startDt: 2021-10-05T00:58:28.516
-                FailedByTimeout:
-                  value:
-                    id: 47
-                    state: FAILED
-                    startDt: 2021-10-05T00:58:28.516
-                    endDt: 2021-10-05T02:59:50.708
-                    message: Initialization timeout 60 seconds is reached
-              schema:
-                $ref: '#/components/schemas/Task'
-          description: Task
-      summary: Returns the task
+      tags:
+      - Documents
       x-accepts: application/json
 components:
-  requestBodies:
-    inline_object_1:
-      content:
-        multipart/form-data:
-          schema:
-            $ref: '#/components/schemas/inline_object_1'
-    inline_object:
-      content:
-        multipart/form-data:
-          schema:
-            $ref: '#/components/schemas/inline_object'
-    inline_object_2:
-      content:
-        multipart/form-data:
-          schema:
-            $ref: '#/components/schemas/inline_object_2'
   schemas:
-    SFDCOpportunityList:
+    Journal:
       example:
-        hits:
-        - opportunityRef:
-            opportunityIDNumber: OPP-00000000
-            ref: /SFDCOpportunities/OPP-00000000
-            opportunityName: UNIVERSITE DE POITIERS - Web of Science - 2022
-            stage: stage
-            type: type
-            contractExpireDate: contractExpireDate
-          matches:
-          - field: field
-            value:
-            - value
-            - value
-          - field: field
-            value:
-            - value
-            - value
-        - opportunityRef:
-            opportunityIDNumber: OPP-00000000
-            ref: /SFDCOpportunities/OPP-00000000
-            opportunityName: UNIVERSITE DE POITIERS - Web of Science - 2022
-            stage: stage
-            type: type
-            contractExpireDate: contractExpireDate
-          matches:
-          - field: field
-            value:
-            - value
-            - value
-          - field: field
-            value:
-            - value
-            - value
-        metadata:
-          total: 0
-          limit: 1
-          page: 6
+        jcrTitle: jcrTitle
+        isoTitle: isoTitle
+        issn: issn
+        name: name
+        eIssn: eIssn
+        links:
+        - type: type
+          url: url
+        - type: type
+          url: url
+        id: id
+        previousIssn:
+        - previousIssn
+        - previousIssn
       properties:
-        metadata:
-          $ref: '#/components/schemas/Metadata'
-        hits:
-          items:
-            $ref: '#/components/schemas/SFDCOpportunityListRecord'
-          type: array
-      type: object
-    SFDCOpportunityListRecord:
-      example:
-        opportunityRef:
-          opportunityIDNumber: OPP-00000000
-          ref: /SFDCOpportunities/OPP-00000000
-          opportunityName: UNIVERSITE DE POITIERS - Web of Science - 2022
-          stage: stage
-          type: type
-          contractExpireDate: contractExpireDate
-        matches:
-        - field: field
-          value:
-          - value
-          - value
-        - field: field
-          value:
-          - value
-          - value
-      properties:
-        opportunityRef:
-          $ref: '#/components/schemas/SFDCOpportunityReference'
-        matches:
-          items:
-            $ref: '#/components/schemas/SearchMatch'
-          type: array
-      type: object
-    SFDCAccountListRecord:
-      example:
-        accountRef:
-          ref: /SFDCAccounts/ACT-0000000
-          accountName: Clarivate
-          enterpriseId: ACT-0000000
-        matches:
-        - field: field
-          value:
-          - value
-          - value
-        - field: field
-          value:
-          - value
-          - value
-      properties:
-        accountRef:
-          $ref: '#/components/schemas/SFDCAccountReference'
-        matches:
-          items:
-            $ref: '#/components/schemas/SearchMatch'
-          type: array
-      type: object
-    SFDCOpportunityReference:
-      example:
-        opportunityIDNumber: OPP-00000000
-        ref: /SFDCOpportunities/OPP-00000000
-        opportunityName: UNIVERSITE DE POITIERS - Web of Science - 2022
-        stage: stage
-        type: type
-        contractExpireDate: contractExpireDate
-      properties:
-        opportunityIDNumber:
-          description: Opportunity ID Number that is can be used in emails
-          example: OPP-00000000
+        id:
           type: string
-        opportunityName:
-          description: Opportunity name
-          example: UNIVERSITE DE POITIERS - Web of Science - 2022
-          type: string
-        ref:
-          description: Link to the full SFDC opportunity data
-          example: /SFDCOpportunities/OPP-00000000
-          type: string
-        type:
-          description: Type of opportunity, New, Renewal, Amendment, etc.
-          type: string
-        contractExpireDate:
-          type: string
-        stage:
-          type: string
-      type: object
-    SFDCInternal:
-      properties:
         name:
-          type: String
-      type: object
-    SFDCAccount:
-      example:
-        emailDomain: slv.vic.gov.au
-        caesarReference:
-          trialEnd: trialEnd
-          soldTo: soldTo
-          accountName: accountName
-          trialStart: trialStart
-          customerId: customerId
-          identifierSet:
-          - soldTo: soldTo
-            identifierList:
-            - kind: kind
-              value: value
-            - kind: kind
-              value: value
-            customApps:
-            - customApps
-            - customApps
-            name: name
-            id: id
-            entitlementSet:
-            - entitlementSet
-            - entitlementSet
-            shipTo: shipTo
-          - soldTo: soldTo
-            identifierList:
-            - kind: kind
-              value: value
-            - kind: kind
-              value: value
-            customApps:
-            - customApps
-            - customApps
-            name: name
-            id: id
-            entitlementSet:
-            - entitlementSet
-            - entitlementSet
-            shipTo: shipTo
-          shipTo: shipTo
-        name: Clarivate
-        enterpriseId: ACT-00000000
-        accountOwner:
-          ref: /SFDCInternalUsers/kadri.nebiu@clarivate.com
-          name: Kadri Nebiu
-          email: kadri.nebiu@clarivate.com
-        portalInfo:
-        - approved: true
-          appInfo:
-            changedDate: changedDate
-            requesterEmails:
-            - requesterEmails
-            - requesterEmails
-            name: name
-            description: description
-            id: id
-          apiProductName: apiProductName
-          subscriptionId: subscriptionId
-          plan: plan
-        - approved: true
-          appInfo:
-            changedDate: changedDate
-            requesterEmails:
-            - requesterEmails
-            - requesterEmails
-            name: name
-            description: description
-            id: id
-          apiProductName: apiProductName
-          subscriptionId: subscriptionId
-          plan: plan
-        sfdcOpportunities:
-        - opportunityIDNumber: OPP-00000000
-          ref: /SFDCOpportunities/OPP-00000000
-          opportunityName: UNIVERSITE DE POITIERS - Web of Science - 2022
-          stage: stage
-          type: type
-          contractExpireDate: contractExpireDate
-        - opportunityIDNumber: OPP-00000000
-          ref: /SFDCOpportunities/OPP-00000000
-          opportunityName: UNIVERSITE DE POITIERS - Web of Science - 2022
-          stage: stage
-          type: type
-          contractExpireDate: contractExpireDate
-      properties:
-        name:
-          example: Clarivate
           type: string
-        enterpriseId:
-          example: ACT-00000000
+        jcrTitle:
           type: string
-        emailDomain:
-          example: slv.vic.gov.au
+        isoTitle:
           type: string
-        accountOwner:
-          $ref: '#/components/schemas/InternalUserReference'
-        sfdcOpportunities:
-          items:
-            $ref: '#/components/schemas/SFDCOpportunityReference'
-          type: array
-        caesarReference:
-          $ref: '#/components/schemas/CaesarIdSetReference'
-        portalInfo:
-          items:
-            $ref: '#/components/schemas/Subscription'
-          type: array
-      type: object
-    SFDCAccountList:
-      example:
-        hits:
-        - accountRef:
-            ref: /SFDCAccounts/ACT-0000000
-            accountName: Clarivate
-            enterpriseId: ACT-0000000
-          matches:
-          - field: field
-            value:
-            - value
-            - value
-          - field: field
-            value:
-            - value
-            - value
-        - accountRef:
-            ref: /SFDCAccounts/ACT-0000000
-            accountName: Clarivate
-            enterpriseId: ACT-0000000
-          matches:
-          - field: field
-            value:
-            - value
-            - value
-          - field: field
-            value:
-            - value
-            - value
-        metadata:
-          total: 0
-          limit: 1
-          page: 6
-      properties:
-        metadata:
-          $ref: '#/components/schemas/Metadata'
-        hits:
-          items:
-            $ref: '#/components/schemas/SFDCAccountListRecord'
-          type: array
-      type: object
-    SFDCOpportunity:
-      example:
-        opportunityIDNumber: OPP-00000000
-        sfdcAccount:
-          ref: /SFDCAccounts/ACT-0000000
-          accountName: Clarivate
-          enterpriseID: ACT-0000000
-        emailDomain: emailDomain
-        opportunityName: UNIVERSITE DE POITIERS - Web of Science - 2022
-        opportunityOwner:
-          ref: /SFDCInternalUsers/kadri.nebiu@clarivate.com
-          name: Kadri Nebiu
-          email: kadri.nebiu@clarivate.com
-        type: type
-        contractExpireDate: contractExpireDate
-        products:
-        - sfdcProductCode: "45021425"
-          quoteLines:
-          - quoteLines
-          - quoteLines
-          sfdcProductName: Journals API - Data Integration
-          primaryQuote: primaryQuote
-          devPortalSubscriptionItem:
-          - approved: true
-            appInfo:
-              changedDate: changedDate
-              requesterEmails:
-              - requesterEmails
-              - requesterEmails
-              name: name
-              description: description
-              id: id
-            apiProductName: apiProductName
-            subscriptionId: subscriptionId
-            plan: plan
-          - approved: true
-            appInfo:
-              changedDate: changedDate
-              requesterEmails:
-              - requesterEmails
-              - requesterEmails
-              name: name
-              description: description
-              id: id
-            apiProductName: apiProductName
-            subscriptionId: subscriptionId
-            plan: plan
-        - sfdcProductCode: "45021425"
-          quoteLines:
-          - quoteLines
-          - quoteLines
-          sfdcProductName: Journals API - Data Integration
-          primaryQuote: primaryQuote
-          devPortalSubscriptionItem:
-          - approved: true
-            appInfo:
-              changedDate: changedDate
-              requesterEmails:
-              - requesterEmails
-              - requesterEmails
-              name: name
-              description: description
-              id: id
-            apiProductName: apiProductName
-            subscriptionId: subscriptionId
-            plan: plan
-          - approved: true
-            appInfo:
-              changedDate: changedDate
-              requesterEmails:
-              - requesterEmails
-              - requesterEmails
-              name: name
-              description: description
-              id: id
-            apiProductName: apiProductName
-            subscriptionId: subscriptionId
-            plan: plan
-        closeDate: closeDate
-        opportunityID: opportunityID
-        contractEffectiveDate: contractEffectiveDate
-        createdDate: createdDate
-        stage: stage
-      properties:
-        opportunityIDNumber:
-          description: Opportunity ID Number that is can be used in emails
-          example: OPP-00000000
+        issn:
           type: string
-        opportunityName:
-          description: Opportunity name
-          example: UNIVERSITE DE POITIERS - Web of Science - 2022
-          type: string
-        opportunityID:
-          type: string
-        type:
-          description: Type of opportunity, New, Renewal, Amendment, etc.
-          type: string
-        contractExpireDate:
-          type: string
-        contractEffectiveDate:
-          type: string
-        closeDate:
-          type: string
-        createdDate:
-          type: string
-        stage:
-          type: string
-        sfdcAccount:
-          $ref: '#/components/schemas/SFDCOpportunity_sfdcAccount'
-        opportunityOwner:
-          $ref: '#/components/schemas/SFDCOpportunity_opportunityOwner'
-        emailDomain:
-          type: string
-        products:
-          items:
-            $ref: '#/components/schemas/OpportunityAPIItem'
-          type: array
-      type: object
-    OpportunityAPIItem:
-      example:
-        sfdcProductCode: "45021425"
-        quoteLines:
-        - quoteLines
-        - quoteLines
-        sfdcProductName: Journals API - Data Integration
-        primaryQuote: primaryQuote
-        devPortalSubscriptionItem:
-        - approved: true
-          appInfo:
-            changedDate: changedDate
-            requesterEmails:
-            - requesterEmails
-            - requesterEmails
-            name: name
-            description: description
-            id: id
-          apiProductName: apiProductName
-          subscriptionId: subscriptionId
-          plan: plan
-        - approved: true
-          appInfo:
-            changedDate: changedDate
-            requesterEmails:
-            - requesterEmails
-            - requesterEmails
-            name: name
-            description: description
-            id: id
-          apiProductName: apiProductName
-          subscriptionId: subscriptionId
-          plan: plan
-      properties:
-        sfdcProductCode:
-          example: "45021425"
-          type: string
-        sfdcProductName:
-          example: Journals API - Data Integration
-          type: string
-        primaryQuote:
-          type: string
-        quoteLines:
+        previousIssn:
           items:
             type: string
           type: array
-        devPortalSubscriptionItem:
+        eIssn:
+          type: string
+        links:
           items:
-            $ref: '#/components/schemas/Subscription'
+            $ref: '#/components/schemas/Journal_links'
           type: array
       type: object
-    CaesarIdSetReference:
-      description: Caesar reference that is used when searching other entitites
-      example:
-        trialEnd: trialEnd
-        soldTo: soldTo
-        accountName: accountName
-        trialStart: trialStart
-        customerId: customerId
-        identifierSet:
-        - soldTo: soldTo
-          identifierList:
-          - kind: kind
-            value: value
-          - kind: kind
-            value: value
-          customApps:
-          - customApps
-          - customApps
-          name: name
-          id: id
-          entitlementSet:
-          - entitlementSet
-          - entitlementSet
-          shipTo: shipTo
-        - soldTo: soldTo
-          identifierList:
-          - kind: kind
-            value: value
-          - kind: kind
-            value: value
-          customApps:
-          - customApps
-          - customApps
-          name: name
-          id: id
-          entitlementSet:
-          - entitlementSet
-          - entitlementSet
-          shipTo: shipTo
-        shipTo: shipTo
-      properties:
-        accountName:
-          type: string
-        customerId:
-          type: string
-        shipTo:
-          type: string
-        soldTo:
-          type: string
-        trialStart:
-          type: string
-        trialEnd:
-          type: string
-        identifierSet:
-          items:
-            $ref: '#/components/schemas/CaesarIdSetReference_identifierSet'
-          type: array
-      type: object
-    InternalUserList:
+    JournalsList:
       example:
         hits:
-        - internalUserRef:
-            ref: /SFDCInternalUsers/kadri.nebiu@clarivate.com
-            name: Kadri Nebiu
-            email: kadri.nebiu@clarivate.com
-          matches:
-          - field: field
-            value:
-            - value
-            - value
-          - field: field
-            value:
-            - value
-            - value
-        - internalUserRef:
-            ref: /SFDCInternalUsers/kadri.nebiu@clarivate.com
-            name: Kadri Nebiu
-            email: kadri.nebiu@clarivate.com
-          matches:
-          - field: field
-            value:
-            - value
-            - value
-          - field: field
-            value:
-            - value
-            - value
+        - jcrTitle: jcrTitle
+          isoTitle: isoTitle
+          issn: issn
+          name: name
+          eIssn: eIssn
+          links:
+          - type: type
+            url: url
+          - type: type
+            url: url
+          id: id
+          previousIssn:
+          - previousIssn
+          - previousIssn
+        - jcrTitle: jcrTitle
+          isoTitle: isoTitle
+          issn: issn
+          name: name
+          eIssn: eIssn
+          links:
+          - type: type
+            url: url
+          - type: type
+            url: url
+          id: id
+          previousIssn:
+          - previousIssn
+          - previousIssn
         metadata:
-          total: 0
-          limit: 1
-          page: 6
+          total: 1
+          limit: 6
+          page: 0
       properties:
         metadata:
           $ref: '#/components/schemas/Metadata'
         hits:
           items:
-            $ref: '#/components/schemas/InternalUserListRecord'
+            $ref: '#/components/schemas/Journal'
           type: array
       type: object
-    InternalUserListRecord:
+    Document:
       example:
-        internalUserRef:
-          ref: /SFDCInternalUsers/kadri.nebiu@clarivate.com
-          name: Kadri Nebiu
-          email: kadri.nebiu@clarivate.com
-        matches:
-        - field: field
-          value:
-          - value
-          - value
-        - field: field
-          value:
-          - value
-          - value
+        uid: uid
+        types:
+        - types
+        - types
+        names:
+          bookEditors:
+          - displayName: displayName
+          - displayName: displayName
+          corp:
+          - displayName: displayName
+          - displayName: displayName
+          inventors:
+          - displayName: displayName
+          - displayName: displayName
+          bookCorp:
+          - displayName: displayName
+          - displayName: displayName
+          assignees:
+          - displayName: displayName
+          - displayName: displayName
+          issuingOrganizations:
+          - displayName: displayName
+          - displayName: displayName
+          investigators:
+          - displayName: displayName
+          - displayName: displayName
+          books:
+          - displayName: displayName
+          - displayName: displayName
+          additionalAuthors:
+          - displayName: displayName
+          - displayName: displayName
+          sponsors:
+          - displayName: displayName
+          - displayName: displayName
+          anonymous:
+          - displayName: displayName
+          - displayName: displayName
+          editors:
+          - displayName: displayName
+          - displayName: displayName
+          authors:
+          - wosStandard: wosStandard
+            displayName: displayName
+            researcherId: researcherId
+          - wosStandard: wosStandard
+            displayName: displayName
+            researcherId: researcherId
+        citations:
+        - count: 1
+          db: db
+        - count: 1
+          db: db
+        keywords:
+          authorKeywords:
+          - authorKeywords
+          - authorKeywords
+        identifiers:
+          issn: issn
+          isbn: isbn
+          eissn: eissn
+          eisbn: eisbn
+          pmid: pmid
+          doi: doi
+        links:
+          citingArticles: citingArticles
+          references: references
+          related: related
+          record: record
+        source:
+          volume: volume
+          publishYear: 0
+          pages:
+            count: 6
+            range: range
+            end: end
+            begin: begin
+          issue: issue
+          articleNumber: articleNumber
+          supplement: supplement
+          sourceTitle: sourceTitle
+          publishMonth: publishMonth
+          specialIssue: specialIssue
+        title: title
       properties:
-        internalUserRef:
-          $ref: '#/components/schemas/InternalUserReference'
-        matches:
+        uid:
+          type: string
+        title:
+          type: string
+        types:
           items:
-            $ref: '#/components/schemas/SearchMatch'
+            type: string
           type: array
-      type: object
-    InternalUserReference:
-      example:
-        ref: /SFDCInternalUsers/kadri.nebiu@clarivate.com
-        name: Kadri Nebiu
-        email: kadri.nebiu@clarivate.com
-      properties:
-        email:
-          example: kadri.nebiu@clarivate.com
-          type: string
-        name:
-          example: Kadri Nebiu
-          type: string
-        ref:
-          example: /SFDCInternalUsers/kadri.nebiu@clarivate.com
-          type: string
-      type: object
-    InternalUser:
-      properties:
-        email:
-          example: kadri.nebiu@clarivate.com
-          type: string
-        name:
-          example: Kadri Nebiu
-          type: string
-        sfdcAccounts:
+        source:
+          $ref: '#/components/schemas/Document_source'
+        names:
+          $ref: '#/components/schemas/Document_names'
+        links:
+          $ref: '#/components/schemas/Document_links'
+        citations:
           items:
-            $ref: '#/components/schemas/SFDCAccountReference'
+            $ref: '#/components/schemas/Document_citations'
           type: array
+        identifiers:
+          $ref: '#/components/schemas/Document_identifiers'
+        keywords:
+          $ref: '#/components/schemas/Document_keywords'
+      required:
+      - uid
       type: object
-    SFDCAccountReference:
-      description: SFDC account reference that is used when searching other entitites
+    DocumentsList:
       example:
-        ref: /SFDCAccounts/ACT-0000000
-        accountName: Clarivate
-        enterpriseId: ACT-0000000
+        hits:
+        - uid: uid
+          types:
+          - types
+          - types
+          names:
+            bookEditors:
+            - displayName: displayName
+            - displayName: displayName
+            corp:
+            - displayName: displayName
+            - displayName: displayName
+            inventors:
+            - displayName: displayName
+            - displayName: displayName
+            bookCorp:
+            - displayName: displayName
+            - displayName: displayName
+            assignees:
+            - displayName: displayName
+            - displayName: displayName
+            issuingOrganizations:
+            - displayName: displayName
+            - displayName: displayName
+            investigators:
+            - displayName: displayName
+            - displayName: displayName
+            books:
+            - displayName: displayName
+            - displayName: displayName
+            additionalAuthors:
+            - displayName: displayName
+            - displayName: displayName
+            sponsors:
+            - displayName: displayName
+            - displayName: displayName
+            anonymous:
+            - displayName: displayName
+            - displayName: displayName
+            editors:
+            - displayName: displayName
+            - displayName: displayName
+            authors:
+            - wosStandard: wosStandard
+              displayName: displayName
+              researcherId: researcherId
+            - wosStandard: wosStandard
+              displayName: displayName
+              researcherId: researcherId
+          citations:
+          - count: 1
+            db: db
+          - count: 1
+            db: db
+          keywords:
+            authorKeywords:
+            - authorKeywords
+            - authorKeywords
+          identifiers:
+            issn: issn
+            isbn: isbn
+            eissn: eissn
+            eisbn: eisbn
+            pmid: pmid
+            doi: doi
+          links:
+            citingArticles: citingArticles
+            references: references
+            related: related
+            record: record
+          source:
+            volume: volume
+            publishYear: 0
+            pages:
+              count: 6
+              range: range
+              end: end
+              begin: begin
+            issue: issue
+            articleNumber: articleNumber
+            supplement: supplement
+            sourceTitle: sourceTitle
+            publishMonth: publishMonth
+            specialIssue: specialIssue
+          title: title
+        - uid: uid
+          types:
+          - types
+          - types
+          names:
+            bookEditors:
+            - displayName: displayName
+            - displayName: displayName
+            corp:
+            - displayName: displayName
+            - displayName: displayName
+            inventors:
+            - displayName: displayName
+            - displayName: displayName
+            bookCorp:
+            - displayName: displayName
+            - displayName: displayName
+            assignees:
+            - displayName: displayName
+            - displayName: displayName
+            issuingOrganizations:
+            - displayName: displayName
+            - displayName: displayName
+            investigators:
+            - displayName: displayName
+            - displayName: displayName
+            books:
+            - displayName: displayName
+            - displayName: displayName
+            additionalAuthors:
+            - displayName: displayName
+            - displayName: displayName
+            sponsors:
+            - displayName: displayName
+            - displayName: displayName
+            anonymous:
+            - displayName: displayName
+            - displayName: displayName
+            editors:
+            - displayName: displayName
+            - displayName: displayName
+            authors:
+            - wosStandard: wosStandard
+              displayName: displayName
+              researcherId: researcherId
+            - wosStandard: wosStandard
+              displayName: displayName
+              researcherId: researcherId
+          citations:
+          - count: 1
+            db: db
+          - count: 1
+            db: db
+          keywords:
+            authorKeywords:
+            - authorKeywords
+            - authorKeywords
+          identifiers:
+            issn: issn
+            isbn: isbn
+            eissn: eissn
+            eisbn: eisbn
+            pmid: pmid
+            doi: doi
+          links:
+            citingArticles: citingArticles
+            references: references
+            related: related
+            record: record
+          source:
+            volume: volume
+            publishYear: 0
+            pages:
+              count: 6
+              range: range
+              end: end
+              begin: begin
+            issue: issue
+            articleNumber: articleNumber
+            supplement: supplement
+            sourceTitle: sourceTitle
+            publishMonth: publishMonth
+            specialIssue: specialIssue
+          title: title
+        metadata:
+          total: 1
+          limit: 6
+          page: 0
       properties:
-        enterpriseId:
-          example: ACT-0000000
-          type: string
-        accountName:
-          example: Clarivate
-          type: string
-        ref:
-          example: /SFDCAccounts/ACT-0000000
-          type: string
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        hits:
+          items:
+            $ref: '#/components/schemas/Document'
+          type: array
       type: object
     Metadata:
-      description: Information about total number of items in the retrieve, number
-        of recodrs on the page, and the page number.
       example:
-        total: 0
-        limit: 1
-        page: 6
+        total: 1
+        limit: 6
+        page: 0
       properties:
-        total:
-          description: Total number of records for the request.
-          format: int32
-          type: integer
         page:
-          description: Page number (default is 1)
           format: int32
           type: integer
         limit:
-          description: Number of records on a page (default is 10).
+          format: int32
+          type: integer
+        total:
           format: int32
           type: integer
       type: object
-    SearchMatch:
-      description: Displays the field and value matched to the search string
+    Journal_links:
       example:
-        field: field
-        value:
-        - value
-        - value
+        type: type
+        url: url
       properties:
-        field:
-          description: Name of the matched field
+        type:
           type: string
-        value:
-          description: Array of matched values (if several) with the HTML highligthing
-          items:
-            type: string
-          type: array
+        url:
+          type: string
       type: object
-    Task:
+    Document_source_pages:
       example:
-        startDt: 2000-01-23T04:56:07.000+00:00
-        endDt: 2000-01-23T04:56:07.000+00:00
-        id: 0
-        state: state
-        message: message
+        count: 6
+        range: range
+        end: end
+        begin: begin
       properties:
-        id:
+        range:
+          type: string
+        begin:
+          type: string
+        end:
+          type: string
+        count:
           format: int32
           type: integer
-        state:
-          type: string
-        startDt:
-          format: date-time
-          type: string
-        endDt:
-          format: date-time
-          type: string
-        message:
-          type: string
       type: object
-    Subscriptions:
-      items:
-        $ref: '#/components/schemas/Subscription'
-      type: array
-    Subscription:
+    Document_source:
       example:
-        approved: true
-        appInfo:
-          changedDate: changedDate
-          requesterEmails:
-          - requesterEmails
-          - requesterEmails
-          name: name
-          description: description
-          id: id
-        apiProductName: apiProductName
-        subscriptionId: subscriptionId
-        plan: plan
+        volume: volume
+        publishYear: 0
+        pages:
+          count: 6
+          range: range
+          end: end
+          begin: begin
+        issue: issue
+        articleNumber: articleNumber
+        supplement: supplement
+        sourceTitle: sourceTitle
+        publishMonth: publishMonth
+        specialIssue: specialIssue
       properties:
-        subscriptionId:
+        sourceTitle:
           type: string
-        appInfo:
-          $ref: '#/components/schemas/Subscription_appInfo'
-        apiProductName:
+        publishYear:
+          format: int32
+          type: integer
+        publishMonth:
           type: string
-        plan:
+        volume:
           type: string
-        approved:
-          type: boolean
+        issue:
+          type: string
+        supplement:
+          type: string
+        specialIssue:
+          type: string
+        articleNumber:
+          type: string
+        pages:
+          $ref: '#/components/schemas/Document_source_pages'
       type: object
-    inline_object:
-      properties:
-        file:
-          format: binary
-          type: string
-      type: object
-    inline_object_1:
-      properties:
-        file:
-          format: binary
-          type: string
-      type: object
-    inline_object_2:
-      properties:
-        file:
-          format: binary
-          type: string
-      type: object
-    SFDCOpportunity_sfdcAccount:
+    Document_names_authors:
       example:
-        ref: /SFDCAccounts/ACT-0000000
-        accountName: Clarivate
-        enterpriseID: ACT-0000000
+        wosStandard: wosStandard
+        displayName: displayName
+        researcherId: researcherId
       properties:
-        enterpriseID:
-          example: ACT-0000000
+        displayName:
           type: string
-        accountName:
-          example: Clarivate
+        wosStandard:
           type: string
-        ref:
-          example: /SFDCAccounts/ACT-0000000
+        researcherId:
           type: string
       type: object
-    SFDCOpportunity_opportunityOwner:
+    Document_names_inventors:
       example:
-        ref: /SFDCInternalUsers/kadri.nebiu@clarivate.com
-        name: Kadri Nebiu
-        email: kadri.nebiu@clarivate.com
+        displayName: displayName
       properties:
-        email:
-          example: kadri.nebiu@clarivate.com
-          type: string
-        name:
-          example: Kadri Nebiu
-          type: string
-        ref:
-          example: /SFDCInternalUsers/kadri.nebiu@clarivate.com
+        displayName:
           type: string
       type: object
-    CaesarIdSetReference_identifierList:
+    Document_names:
       example:
-        kind: kind
-        value: value
+        bookEditors:
+        - displayName: displayName
+        - displayName: displayName
+        corp:
+        - displayName: displayName
+        - displayName: displayName
+        inventors:
+        - displayName: displayName
+        - displayName: displayName
+        bookCorp:
+        - displayName: displayName
+        - displayName: displayName
+        assignees:
+        - displayName: displayName
+        - displayName: displayName
+        issuingOrganizations:
+        - displayName: displayName
+        - displayName: displayName
+        investigators:
+        - displayName: displayName
+        - displayName: displayName
+        books:
+        - displayName: displayName
+        - displayName: displayName
+        additionalAuthors:
+        - displayName: displayName
+        - displayName: displayName
+        sponsors:
+        - displayName: displayName
+        - displayName: displayName
+        anonymous:
+        - displayName: displayName
+        - displayName: displayName
+        editors:
+        - displayName: displayName
+        - displayName: displayName
+        authors:
+        - wosStandard: wosStandard
+          displayName: displayName
+          researcherId: researcherId
+        - wosStandard: wosStandard
+          displayName: displayName
+          researcherId: researcherId
       properties:
-        kind:
-          type: string
-        value:
-          type: string
-      required:
-      - kind
-      - value
-      type: object
-    CaesarIdSetReference_identifierSet:
-      example:
-        soldTo: soldTo
-        identifierList:
-        - kind: kind
-          value: value
-        - kind: kind
-          value: value
-        customApps:
-        - customApps
-        - customApps
-        name: name
-        id: id
-        entitlementSet:
-        - entitlementSet
-        - entitlementSet
-        shipTo: shipTo
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        shipTo:
-          type: string
-        soldTo:
-          type: string
-        identifierList:
+        authors:
           items:
-            $ref: '#/components/schemas/CaesarIdSetReference_identifierList'
+            $ref: '#/components/schemas/Document_names_authors'
           type: array
-        customApps:
+        inventors:
           items:
-            type: string
+            $ref: '#/components/schemas/Document_names_inventors'
           type: array
-        entitlementSet:
+        bookCorp:
           items:
-            type: string
+            $ref: '#/components/schemas/Document_names_inventors'
           type: array
-      required:
-      - entitlementSet
-      - id
-      - identifierList
-      - name
-      - shipTo
-      - soldTo
+        bookEditors:
+          items:
+            $ref: '#/components/schemas/Document_names_inventors'
+          type: array
+        books:
+          items:
+            $ref: '#/components/schemas/Document_names_inventors'
+          type: array
+        additionalAuthors:
+          items:
+            $ref: '#/components/schemas/Document_names_inventors'
+          type: array
+        anonymous:
+          items:
+            $ref: '#/components/schemas/Document_names_inventors'
+          type: array
+        assignees:
+          items:
+            $ref: '#/components/schemas/Document_names_inventors'
+          type: array
+        corp:
+          items:
+            $ref: '#/components/schemas/Document_names_inventors'
+          type: array
+        editors:
+          items:
+            $ref: '#/components/schemas/Document_names_inventors'
+          type: array
+        investigators:
+          items:
+            $ref: '#/components/schemas/Document_names_inventors'
+          type: array
+        sponsors:
+          items:
+            $ref: '#/components/schemas/Document_names_inventors'
+          type: array
+        issuingOrganizations:
+          items:
+            $ref: '#/components/schemas/Document_names_inventors'
+          type: array
       type: object
-    Subscription_appInfo:
+    Document_links:
       example:
-        changedDate: changedDate
-        requesterEmails:
-        - requesterEmails
-        - requesterEmails
-        name: name
-        description: description
-        id: id
+        citingArticles: citingArticles
+        references: references
+        related: related
+        record: record
       properties:
-        id:
+        record:
           type: string
-        name:
+        citingArticles:
           type: string
-        description:
+        references:
           type: string
-        changedDate:
+        related:
           type: string
-        requesterEmails:
+      type: object
+    Document_citations:
+      example:
+        count: 1
+        db: db
+      properties:
+        db:
+          type: string
+        count:
+          format: int32
+          type: integer
+      type: object
+    Document_identifiers:
+      example:
+        issn: issn
+        isbn: isbn
+        eissn: eissn
+        eisbn: eisbn
+        pmid: pmid
+        doi: doi
+      properties:
+        doi:
+          type: string
+        issn:
+          type: string
+        eissn:
+          type: string
+        isbn:
+          type: string
+        eisbn:
+          type: string
+        pmid:
+          type: string
+      type: object
+    Document_keywords:
+      example:
+        authorKeywords:
+        - authorKeywords
+        - authorKeywords
+      properties:
+        authorKeywords:
           items:
             type: string
           type: array
