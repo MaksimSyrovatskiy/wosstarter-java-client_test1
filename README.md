@@ -2,7 +2,7 @@
 
 Web of Science™ Starter API
 - API version: 1.0.0
-  - Build date: 2021-11-14T22:58:03.527+01:00[Europe/Paris]
+  - Build date: 2021-11-14T23:01:17.502+01:00[Europe/Paris]
 
 The Web of Science™ Starter API provides basic metadata and search functionality for Web of Science™ Documents and Journals. Based on your subscription, this API can return times cited of documents.
 

@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * Journal
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-14T22:58:03.527+01:00[Europe/Paris]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-14T23:01:17.502+01:00[Europe/Paris]")
 public class Journal {
   public static final String SERIALIZED_NAME_ID = "id";
   @SerializedName(SERIALIZED_NAME_ID)

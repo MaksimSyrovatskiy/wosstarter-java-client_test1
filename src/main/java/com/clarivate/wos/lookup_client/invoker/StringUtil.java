@@ -16,7 +16,7 @@ package com.clarivate.wos.lookup_client.invoker;
 import java.util.Collection;
 import java.util.Iterator;
 
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-14T22:58:03.527+01:00[Europe/Paris]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2021-11-14T23:01:17.502+01:00[Europe/Paris]")
 public class StringUtil {
   /**
    * Check if the given array contains the given value (with case-insensitive comparison).
