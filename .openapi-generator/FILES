@@ -1,5 +1,4 @@
 .gitignore
-.openapi-generator-ignore
 .travis.yml
 README.md
 api/openapi.yaml
@@ -65,20 +64,3 @@ src/main/java/com/clarivate/wos/lookup_client/model/Journal.java
 src/main/java/com/clarivate/wos/lookup_client/model/JournalLinks.java
 src/main/java/com/clarivate/wos/lookup_client/model/JournalsList.java
 src/main/java/com/clarivate/wos/lookup_client/model/Metadata.java
-src/test/java/com/clarivate/wos/lookup_client/DocumentsApiTest.java
-src/test/java/com/clarivate/wos/lookup_client/JournalsApiTest.java
-src/test/java/com/clarivate/wos/lookup_client/model/DocumentCitationsTest.java
-src/test/java/com/clarivate/wos/lookup_client/model/DocumentIdentifiersTest.java
-src/test/java/com/clarivate/wos/lookup_client/model/DocumentKeywordsTest.java
-src/test/java/com/clarivate/wos/lookup_client/model/DocumentLinksTest.java
-src/test/java/com/clarivate/wos/lookup_client/model/DocumentNamesAuthorsTest.java
-src/test/java/com/clarivate/wos/lookup_client/model/DocumentNamesInventorsTest.java
-src/test/java/com/clarivate/wos/lookup_client/model/DocumentNamesTest.java
-src/test/java/com/clarivate/wos/lookup_client/model/DocumentSourcePagesTest.java
-src/test/java/com/clarivate/wos/lookup_client/model/DocumentSourceTest.java
-src/test/java/com/clarivate/wos/lookup_client/model/DocumentTest.java
-src/test/java/com/clarivate/wos/lookup_client/model/DocumentsListTest.java
-src/test/java/com/clarivate/wos/lookup_client/model/JournalLinksTest.java
-src/test/java/com/clarivate/wos/lookup_client/model/JournalTest.java
-src/test/java/com/clarivate/wos/lookup_client/model/JournalsListTest.java
-src/test/java/com/clarivate/wos/lookup_client/model/MetadataTest.java
