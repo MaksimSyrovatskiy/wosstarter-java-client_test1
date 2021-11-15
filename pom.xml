@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.clarivate.wos</groupId>
-    <artifactId>com.clarivate.wos.lookup-client</artifactId>
+    <groupId>com.clarivate.wos.amr</groupId>
+    <artifactId>com.clarivate.wos.amr.adapter.rest.client</artifactId>
     <packaging>jar</packaging>
-    <name>com.clarivate.wos.lookup-client</name>
-    <version>123</version>
+    <name>com.clarivate.wos.amr.adapter.rest.client</name>
+    <version>1.0.0</version>
     <url>https://github.com/openapitools/openapi-generator</url>
     <description>OpenAPI Java</description>
     <scm>
