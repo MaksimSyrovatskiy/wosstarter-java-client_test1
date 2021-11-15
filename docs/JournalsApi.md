@@ -17,11 +17,11 @@ Method | HTTP request | Description
 ### Example
 ```java
 // Import classes:
-import com.clarivate.wos.lookup_client.invoker.ApiClient;
-import com.clarivate.wos.lookup_client.invoker.ApiException;
-import com.clarivate.wos.lookup_client.invoker.Configuration;
-import com.clarivate.wos.lookup_client.invoker.models.*;
-import com.clarivate.wos.lookup_client.JournalsApi;
+import com.clarivate.wos.amr.adapter.rest.client.invoker.ApiClient;
+import com.clarivate.wos.amr.adapter.rest.client.invoker.ApiException;
+import com.clarivate.wos.amr.adapter.rest.client.invoker.Configuration;
+import com.clarivate.wos.amr.adapter.rest.client.invoker.models.*;
+import com.clarivate.wos.amr.adapter.rest.client.JournalsApi;
 
 public class Example {
   public static void main(String[] args) {
@@ -77,11 +77,11 @@ No authorization required
 ### Example
 ```java
 // Import classes:
-import com.clarivate.wos.lookup_client.invoker.ApiClient;
-import com.clarivate.wos.lookup_client.invoker.ApiException;
-import com.clarivate.wos.lookup_client.invoker.Configuration;
-import com.clarivate.wos.lookup_client.invoker.models.*;
-import com.clarivate.wos.lookup_client.JournalsApi;
+import com.clarivate.wos.amr.adapter.rest.client.invoker.ApiClient;
+import com.clarivate.wos.amr.adapter.rest.client.invoker.ApiException;
+import com.clarivate.wos.amr.adapter.rest.client.invoker.Configuration;
+import com.clarivate.wos.amr.adapter.rest.client.invoker.models.*;
+import com.clarivate.wos.amr.adapter.rest.client.JournalsApi;
 
 public class Example {
   public static void main(String[] args) {

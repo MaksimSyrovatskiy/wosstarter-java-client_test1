@@ -1,8 +1,8 @@
-# com.clarivate.wos.lookup-client
+# com.clarivate.wos.amr.adapter.rest.client
 
 Web of Science™ Starter API
 - API version: 1.0.0
-  - Build date: 2021-11-14T23:01:17.502+01:00[Europe/Paris]
+  - Build date: 2021-11-15T23:02:42.939333700+01:00[Europe/Paris]
 
 The Web of Science™ Starter API provides basic metadata and search functionality for Web of Science™ Documents and Journals. Based on your subscription, this API can return times cited of documents.
 
@@ -120,9 +120,9 @@ Add this dependency to your project's POM:
 
 ```xml
 <dependency>
-  <groupId>com.clarivate.wos</groupId>
-  <artifactId>com.clarivate.wos.lookup-client</artifactId>
-  <version>123</version>
+  <groupId>com.clarivate.wos.amr</groupId>
+  <artifactId>com.clarivate.wos.amr.adapter.rest.client</artifactId>
+  <version>1.0.0</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -132,7 +132,7 @@ Add this dependency to your project's POM:
 Add this dependency to your project's build file:
 
 ```groovy
-compile "com.clarivate.wos:com.clarivate.wos.lookup-client:123"
+compile "com.clarivate.wos.amr:com.clarivate.wos.amr.adapter.rest.client:1.0.0"
 ```
 
 ### Others
@@ -145,7 +145,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/com.clarivate.wos.lookup-client-123.jar`
+* `target/com.clarivate.wos.amr.adapter.rest.client-1.0.0.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -155,11 +155,11 @@ Please follow the [installation](#installation) instruction and execute the foll
 ```java
 
 // Import classes:
-import com.clarivate.wos.lookup_client.invoker.ApiClient;
-import com.clarivate.wos.lookup_client.invoker.ApiException;
-import com.clarivate.wos.lookup_client.invoker.Configuration;
-import com.clarivate.wos.lookup_client.invoker.models.*;
-import com.clarivate.wos.lookup_client.DocumentsApi;
+import com.clarivate.wos.amr.adapter.rest.client.invoker.ApiClient;
+import com.clarivate.wos.amr.adapter.rest.client.invoker.ApiException;
+import com.clarivate.wos.amr.adapter.rest.client.invoker.Configuration;
+import com.clarivate.wos.amr.adapter.rest.client.invoker.models.*;
+import com.clarivate.wos.amr.adapter.rest.client.DocumentsApi;
 
 public class Example {
   public static void main(String[] args) {
