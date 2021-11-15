@@ -2,8 +2,8 @@ apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'java'
 
-group = 'com.clarivate.wos'
-version = '123'
+group = 'com.clarivate.wos.amr'
+version = '1.0.0'
 
 buildscript {
     repositories {
@@ -87,7 +87,7 @@ if(hasProperty('target') && target == 'android') {
     publishing {
         publications {
             maven(MavenPublication) {
-               artifactId = 'com.clarivate.wos.lookup-client'
+               artifactId = 'com.clarivate.wos.amr.adapter.rest.client'
                from components.java
             }
         }
