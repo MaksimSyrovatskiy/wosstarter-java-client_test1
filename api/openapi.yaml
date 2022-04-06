@@ -11,16 +11,35 @@ info:
     ## Content
 
     You can learn more about content at [Web of Science™ Product Page](https://clarivate.com/webofsciencegroup/solutions/web-of-science/) or in the [Web of Science™ Help](https://webofscience.help.clarivate.com/en-us/Content/home.htm).
+    The following attributes are available from in the API.
+    * UID (Unique Identifier)
+    * Title
+    * Issue
+    * Pages
+    * DOI
+    * Volume
+    * Times Cited
+    * ISSN/eISSN
+    * ISBN
+    * PubMed ID
+    * Source
+    * Web of Science URL
+    * Citing Articles Web of Science URL
+    * Publication Date
+    * Authors
+    * Author Keywords
+    * [Document Type](https://webofscience.help.clarivate.com/en-us/Content/document-types.html)
+    * Cited References Web of Science URL
+    * ResearcherID
+    * Book DOI
+    * Related Records Web of Science URL
+    * Journal Citations Reports URL
 
-    (TODO: Add list of fields that are returned from this API.)
+
 
     ## Credentials
 
     All requests require authentication with an API Key authentication flow. For more details, check the [Guide][https://developer.clarivate.com/help/api-access#key_access].
-
-
-    ## API Client Libraries
-    TBD
 
     ## Search and field tags for Web of Science documents
     Web of Science™ offers [advanced search query builder](https://webofscience.help.clarivate.com/en-us/Content/advanced-search.html). This API does not support all field tags for documents. [Web of Science API Expanded](https://developer.clarivate.com/apis/wos) offers all available field tags. The following table lists the field tags that are supported by this API.
@@ -34,8 +53,10 @@ info:
     | CS        | Issue                                                                                                                                                       |
     | PY        | Year Published                                                                                                                                              |
     | AU        | Author                                                                                                                                                      |
+    | AI        | Author Identifier                                                                                                                                                      |
     | UT        | Accession Number                                                                                                                                            |
     | DO        | DOI                                                                                                                                                         |
+    | DT        | [Document Type](https://webofscience.help.clarivate.com/en-us/Content/document-types.html)                                                                                                                                                         |
     | PMID      | PubMed ID                                                                                                                                                   |
     | OG        | Search for preferred organization names and/or their name variants from the Preferred Organization Index. <p> A search on a preferred organization name returns all records that contain the preferred name and all records that contain its name variants. A search on a name variant returns all records that contain the variant. For example, Cornell Law Sch returns all records that contain Cornell Law Sch in the Addresses field. <p> When searching for organization names that contain a Boolean (AND, NOT, NEAR, and SAME), always enclose the word in quotation marks ( " " ). For example: <p>   - OG=(Japan Science "and" Technology Agency (JST))      <br>   - OG=("Near" East Univ)         <br> - OG=("OR" Hlth Sci Univ)                           |
     | TS        | Searches for topic terms in the following fields within a document: <p> - Title <br> - Abstract <br> - Author keywords <br> - Keywords Plus
@@ -85,11 +106,12 @@ info:
     }
   license:
     name: Clarivate Content as a Service Licence
-    url: https://clarivate.com/wp-content/uploads/dlm_uploads/2019/08/Product-Service-Terms.pdf
+    url: https://clarivate.com/download/web-of-science-incites-apis/
   title: Web of Science™ Starter API
   version: 1.0.0
 servers:
-- url: http://example.com
+- description: Web of Science Starter API Production
+  url: http://api.clarivate.com/apis/wos-starter
 tags:
 - description: Web of Science Documents
   name: Documents
@@ -99,7 +121,8 @@ paths:
   /journals:
     get:
       parameters:
-      - explode: true
+      - description: Query Journal by ISSN
+        explode: true
         in: query
         name: issn
         required: false
@@ -130,15 +153,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/JournalsList'
           description: OK
+      summary: Query Journals by ISSN
       tags:
       - Journals
       x-accepts: application/json
-  /journals/{uid}:
+  /journals/{id}:
     get:
       parameters:
-      - explode: false
+      - example: ANAT_REC_PART_A
+        explode: false
         in: path
-        name: uid
+        name: id
         required: true
         schema:
           type: string
@@ -162,41 +187,93 @@ paths:
               schema:
                 $ref: '#/components/schemas/Journal'
           description: OK
+      summary: Get Journal by ID
       tags:
       - Journals
       x-accepts: application/json
   /documents:
     get:
       description: |
-        TODO
+        The endpoint allows to search, filter, or browse across the Web of Science document content by using [advanced search query builder](https://webofscience.help.clarivate.com/en-us/Content/advanced-search.html).
+        The following table lists the field tags that are supported by this API.
+        | Field Tag | Description                                                                                                                                                 |
+        |-----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+        | TI        | Title of document                                                                                                                                           |
+        | IS        | ISSN or ISBN                                                                                                                                                |
+        | SO        | Source title - The result contains all source titles within product database (for example, journal titles and/or book titles if the product includes books) |
+        | VL        | Volume                                                                                                                                                      |
+        | PG        | Page                                                                                                                                                        |
+        | CS        | Issue                                                                                                                                                       |
+        | PY        | Year Published                                                                                                                                              |
+        | AU        | Author                                                                                                                                                      |
+        | AI        | Author Identifier                                                                                                                                                      |
+        | UT        | Accession Number                                                                                                                                            |
+        | DO        | DOI                                                                                                                                                         |
+        | DT        | Document Type                                                                                                                                                          |
+        | PMID      | PubMed ID                                                                                                                                                   |
+        | OG        | Search for preferred organization names and/or their name variants from the Preferred Organization Index. <p> A search on a preferred organization name returns all records that contain the preferred name and all records that contain its name variants. A search on a name variant returns all records that contain the variant. For example, Cornell Law Sch returns all records that contain Cornell Law Sch in the Addresses field. <p> When searching for organization names that contain a Boolean (AND, NOT, NEAR, and SAME), always enclose the word in quotation marks ( " " ). For example: <p>   - OG=(Japan Science "and" Technology Agency (JST))      <br>   - OG=("Near" East Univ)         <br> - OG=("OR" Hlth Sci Univ)                           |
+        | TS        | Searches for topic terms in the following fields within a document: <p> - Title <br> - Abstract <br> - Author keywords <br> - Keywords Plus
       parameters:
-      - explode: true
+      - description: |
+          Web of Science Database abbreviation
+          * WOS - Web of Science Core collection
+          * BIOABS - Biological Abstracts
+          * BCI - BIOSIS Citation Index
+          * BIOSIS - BIOSIS Previews
+          * CCC - Current Contents Connect
+          * DIIDW - Derwent Innovations Index
+          * DRCI - Data Citation Index
+          * MEDLINE - MEDLINE The U.S. National Library of Medicine® (NLM®) premier life sciences database.
+          * ZOOREC - Zoological Records
+          * WOK - All databases
+        explode: true
         in: query
         name: db
         required: false
         schema:
+          default: WOS
+          enum:
+          - BCI
+          - BIOABS
+          - BIOSIS
+          - CCC
+          - DIIDW
+          - DRCI
+          - MEDLINE
+          - WOK
+          - WOS
+          - ZOOREC
           type: string
         style: form
-      - explode: true
+      - description: Web of Science advanced [advanced search query builder](https://webofscience.help.clarivate.com/en-us/Content/advanced-search.html).
+          The supported field tags are listed in description.
+        explode: true
         in: query
         name: q
         required: true
         schema:
+          example: PY=2020
           type: string
         style: form
-      - explode: true
-        in: query
-        name: page
-        required: false
-        schema:
-          format: int32
-          type: integer
-        style: form
-      - explode: true
+      - description: set the limit of records on the page (1-50)
+        explode: true
         in: query
         name: limit
         required: false
         schema:
+          default: 10
+          format: int32
+          maximum: 50
+          minimum: 1
+          type: integer
+        style: form
+      - description: set the result page
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 1
           format: int32
           type: integer
         style: form
@@ -282,12 +359,15 @@ paths:
       x-accepts: application/json
   /documents/{uid}:
     get:
+      description: Get Web of Science document by Accesssion Number (UID)
       parameters:
-      - explode: false
+      - description: Web of Science unique identifier (Accession Number)
+        explode: false
         in: path
         name: uid
         required: true
         schema:
+          example: WOS:000267144200002
           type: string
         style: simple
       responses:
@@ -336,6 +416,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Document'
           description: OK
+      summary: Get Web of Science document by Accesssion Number (UID)
       tags:
       - Documents
       x-accepts: application/json
@@ -359,22 +440,30 @@ components:
         - previousIssn
       properties:
         id:
+          description: Journal unique identifier
           type: string
         name:
+          description: Journal full name
           type: string
         jcrTitle:
+          description: Journal JCR abbreviation
           type: string
         isoTitle:
+          description: Journal title in (ISO format)
           type: string
         issn:
+          description: Journal ISSN
           type: string
         previousIssn:
+          description: Previous ISSNs of the Journal (can be empty)
           items:
             type: string
           type: array
         eIssn:
+          description: Journal eISSN
           type: string
         links:
+          description: URL to the Web of Science Products
           items:
             $ref: '#/components/schemas/Journal_links'
           type: array
@@ -474,9 +563,9 @@ components:
             researcherId: researcherId
         citations:
         - count: 1
-          db: db
+          db: WOS
         - count: 1
-          db: db
+          db: WOS
         keywords:
           authorKeywords:
           - authorKeywords
@@ -510,11 +599,15 @@ components:
         title: title
       properties:
         uid:
+          description: Web of Science Unique Identifier
           type: string
         title:
+          description: Document title
           type: string
         types:
+          description: Document Types
           items:
+            description: Document type
             type: string
           type: array
         source:
@@ -524,6 +617,7 @@ components:
         links:
           $ref: '#/components/schemas/Document_links'
         citations:
+          description: Times Cited
           items:
             $ref: '#/components/schemas/Document_citations'
           type: array
@@ -587,9 +681,9 @@ components:
               researcherId: researcherId
           citations:
           - count: 1
-            db: db
+            db: WOS
           - count: 1
-            db: db
+            db: WOS
           keywords:
             authorKeywords:
             - authorKeywords
@@ -671,9 +765,9 @@ components:
               researcherId: researcherId
           citations:
           - count: 1
-            db: db
+            db: WOS
           - count: 1
-            db: db
+            db: WOS
           keywords:
             authorKeywords:
             - authorKeywords
@@ -717,19 +811,48 @@ components:
             $ref: '#/components/schemas/Document'
           type: array
       type: object
+    OtherName:
+      example:
+        displayName: displayName
+      properties:
+        displayName:
+          description: Web of Science display name
+          type: string
+      type: object
+    AuthorName:
+      example:
+        wosStandard: wosStandard
+        displayName: displayName
+        researcherId: researcherId
+      properties:
+        displayName:
+          description: Web of Science display name
+          type: string
+        wosStandard:
+          description: Web of Science standard name
+          type: string
+        researcherId:
+          description: Web of Science ResearcherID
+          type: string
+      type: object
     Metadata:
+      description: Information about total number of journals in the retrieve, number
+        of recodrs on the page, and the page number
       example:
         total: 1
         limit: 6
         page: 0
       properties:
         page:
+          description: Page number (default is 1)
           format: int32
           type: integer
         limit:
+          description: Number of records on a page (default is 10).
           format: int32
           type: integer
         total:
+          description: Total number of records for the request.
           format: int32
           type: integer
       type: object
@@ -739,8 +862,10 @@ components:
         url: url
       properties:
         type:
+          description: The type of URL that describes the product and page
           type: string
         url:
+          description: URL of Web of Science Product
           type: string
       type: object
     Document_source_pages:
@@ -751,16 +876,21 @@ components:
         begin: begin
       properties:
         range:
+          description: Page range
           type: string
         begin:
+          description: Page begin
           type: string
         end:
+          description: Page end
           type: string
         count:
+          description: Number of pages
           format: int32
           type: integer
       type: object
     Document_source:
+      description: Web of Science document source metadata
       example:
         volume: volume
         publishYear: 0
@@ -777,44 +907,32 @@ components:
         specialIssue: specialIssue
       properties:
         sourceTitle:
+          description: Source title
           type: string
         publishYear:
+          description: Published Year
           format: int32
           type: integer
         publishMonth:
+          description: Published Month
           type: string
         volume:
+          description: Volume
           type: string
         issue:
+          description: Issue
           type: string
         supplement:
+          description: Journal supplement
           type: string
         specialIssue:
+          description: Journal special issue
           type: string
         articleNumber:
+          description: Source Article Number
           type: string
         pages:
           $ref: '#/components/schemas/Document_source_pages'
-      type: object
-    Document_names_authors:
-      example:
-        wosStandard: wosStandard
-        displayName: displayName
-        researcherId: researcherId
-      properties:
-        displayName:
-          type: string
-        wosStandard:
-          type: string
-        researcherId:
-          type: string
-      type: object
-    Document_names_inventors:
-      example:
-        displayName: displayName
-      properties:
-        displayName:
-          type: string
       type: object
     Document_names:
       example:
@@ -863,59 +981,61 @@ components:
           researcherId: researcherId
       properties:
         authors:
+          description: Authors of document
           items:
-            $ref: '#/components/schemas/Document_names_authors'
+            $ref: '#/components/schemas/AuthorName'
           type: array
         inventors:
           items:
-            $ref: '#/components/schemas/Document_names_inventors'
+            $ref: '#/components/schemas/OtherName'
           type: array
         bookCorp:
           items:
-            $ref: '#/components/schemas/Document_names_inventors'
+            $ref: '#/components/schemas/OtherName'
           type: array
         bookEditors:
           items:
-            $ref: '#/components/schemas/Document_names_inventors'
+            $ref: '#/components/schemas/OtherName'
           type: array
         books:
           items:
-            $ref: '#/components/schemas/Document_names_inventors'
+            $ref: '#/components/schemas/OtherName'
           type: array
         additionalAuthors:
           items:
-            $ref: '#/components/schemas/Document_names_inventors'
+            $ref: '#/components/schemas/OtherName'
           type: array
         anonymous:
           items:
-            $ref: '#/components/schemas/Document_names_inventors'
+            $ref: '#/components/schemas/OtherName'
           type: array
         assignees:
           items:
-            $ref: '#/components/schemas/Document_names_inventors'
+            $ref: '#/components/schemas/OtherName'
           type: array
         corp:
           items:
-            $ref: '#/components/schemas/Document_names_inventors'
+            $ref: '#/components/schemas/OtherName'
           type: array
         editors:
           items:
-            $ref: '#/components/schemas/Document_names_inventors'
+            $ref: '#/components/schemas/OtherName'
           type: array
         investigators:
           items:
-            $ref: '#/components/schemas/Document_names_inventors'
+            $ref: '#/components/schemas/OtherName'
           type: array
         sponsors:
           items:
-            $ref: '#/components/schemas/Document_names_inventors'
+            $ref: '#/components/schemas/OtherName'
           type: array
         issuingOrganizations:
           items:
-            $ref: '#/components/schemas/Document_names_inventors'
+            $ref: '#/components/schemas/OtherName'
           type: array
       type: object
     Document_links:
+      description: Web of Science URLs
       example:
         citingArticles: citingArticles
         references: references
@@ -934,15 +1054,20 @@ components:
     Document_citations:
       example:
         count: 1
-        db: db
+        db: WOS
       properties:
         db:
+          description: Web of Science Citation Database (collection) Abbreviation
+            Name
+          example: WOS
           type: string
         count:
+          description: Citation Count
           format: int32
           type: integer
       type: object
     Document_identifiers:
+      description: Document and Source Identifiers
       example:
         issn: issn
         isbn: isbn
@@ -965,6 +1090,7 @@ components:
           type: string
       type: object
     Document_keywords:
+      description: Author keywords
       example:
         authorKeywords:
         - authorKeywords

@@ -7,8 +7,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**db** | **String** |  |  [optional]
-**count** | **Integer** |  |  [optional]
+**db** | **String** | Web of Science Citation Database (collection) Abbreviation Name |  [optional]
+**count** | **Integer** | Citation Count |  [optional]
 
 
 

@@ -1,35 +1,35 @@
 # JournalsApi
 
-All URIs are relative to *http://example.com*
+All URIs are relative to *http://api.clarivate.com/apis/wos-starter*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**journalsGet**](JournalsApi.md#journalsGet) | **GET** /journals | 
-[**journalsUidGet**](JournalsApi.md#journalsUidGet) | **GET** /journals/{uid} | 
+[**journalsGet**](JournalsApi.md#journalsGet) | **GET** /journals | Query Journals by ISSN
+[**journalsIdGet**](JournalsApi.md#journalsIdGet) | **GET** /journals/{id} | Get Journal by ID
 
 
 <a name="journalsGet"></a>
 # **journalsGet**
 > JournalsList journalsGet(issn)
 
-
+Query Journals by ISSN
 
 ### Example
 ```java
 // Import classes:
-import com.clarivate.wos.lookup_client.invoker.ApiClient;
-import com.clarivate.wos.lookup_client.invoker.ApiException;
-import com.clarivate.wos.lookup_client.invoker.Configuration;
-import com.clarivate.wos.lookup_client.invoker.models.*;
-import com.clarivate.wos.lookup_client.JournalsApi;
+import com.clarivate.wos.wos_api_starter_client.invoker.ApiClient;
+import com.clarivate.wos.wos_api_starter_client.invoker.ApiException;
+import com.clarivate.wos.wos_api_starter_client.invoker.Configuration;
+import com.clarivate.wos.wos_api_starter_client.invoker.models.*;
+import com.clarivate.wos.wos_api_starter_client.JournalsApi;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("http://example.com");
+    defaultClient.setBasePath("http://api.clarivate.com/apis/wos-starter");
 
     JournalsApi apiInstance = new JournalsApi(defaultClient);
-    String issn = "issn_example"; // String | 
+    String issn = "issn_example"; // String | Query Journal by ISSN
     try {
       JournalsList result = apiInstance.journalsGet(issn);
       System.out.println(result);
@@ -48,7 +48,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **issn** | **String**|  | [optional]
+ **issn** | **String**| Query Journal by ISSN | [optional]
 
 ### Return type
 
@@ -68,33 +68,33 @@ No authorization required
 |-------------|-------------|------------------|
 **200** | OK |  -  |
 
-<a name="journalsUidGet"></a>
-# **journalsUidGet**
-> Journal journalsUidGet(uid)
+<a name="journalsIdGet"></a>
+# **journalsIdGet**
+> Journal journalsIdGet(id)
 
-
+Get Journal by ID
 
 ### Example
 ```java
 // Import classes:
-import com.clarivate.wos.lookup_client.invoker.ApiClient;
-import com.clarivate.wos.lookup_client.invoker.ApiException;
-import com.clarivate.wos.lookup_client.invoker.Configuration;
-import com.clarivate.wos.lookup_client.invoker.models.*;
-import com.clarivate.wos.lookup_client.JournalsApi;
+import com.clarivate.wos.wos_api_starter_client.invoker.ApiClient;
+import com.clarivate.wos.wos_api_starter_client.invoker.ApiException;
+import com.clarivate.wos.wos_api_starter_client.invoker.Configuration;
+import com.clarivate.wos.wos_api_starter_client.invoker.models.*;
+import com.clarivate.wos.wos_api_starter_client.JournalsApi;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("http://example.com");
+    defaultClient.setBasePath("http://api.clarivate.com/apis/wos-starter");
 
     JournalsApi apiInstance = new JournalsApi(defaultClient);
-    String uid = "uid_example"; // String | 
+    String id = "ANAT_REC_PART_A"; // String | 
     try {
-      Journal result = apiInstance.journalsUidGet(uid);
+      Journal result = apiInstance.journalsIdGet(id);
       System.out.println(result);
     } catch (ApiException e) {
-      System.err.println("Exception when calling JournalsApi#journalsUidGet");
+      System.err.println("Exception when calling JournalsApi#journalsIdGet");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -108,7 +108,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **uid** | **String**|  |
+ **id** | **String**|  |
 
 ### Return type
 
